@@ -5,14 +5,37 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure(2) do |config|
+  #Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "base"
+  Vagrant.configure("2") do |config|
+     config.vm.provision "shell", inline: "echo I did it"
+     
+     config.vm.define "puppet" do |puppet|
+         puppet.vm.box = "ubuntu/trusty64"
+         puppet.vm.network "private_network", ip: "192.168.198.10"
+     end
+    
+     config.vm.define "router_dns" do |router_dns|
+         router_dns.vm.box = "puphpet/centos65-x64"
+         router_dns.vm.network "private_network", ip: "192.168.198.2"
+         router_dns.vm.provision :shell, path: "bootstrap.sh"
+     end
+
+     config.vm.define "client1" do |client1|
+         client1.vm.box = "puphpet/centos65-x64"
+         client1.vm.network "private_network", ip: "192.168.198.11"
+     end
+
+     config.vm.define "client2" do |client2|
+         client2.vm.box = "ubuntu/trusty64"
+         client2.vm.network "private_network", ip: "192.168.198.12"
+     end
+end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -68,4 +91,4 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
-end
+  #end
