@@ -14,10 +14,14 @@
   # boxes at https://atlas.hashicorp.com/search.
   Vagrant.configure("2") do |config|
      config.vm.provision "shell", inline: "echo I did it"
-     
+
      config.vm.define "puppet" do |puppet|
          puppet.vm.box = "ubuntu/trusty64"
          puppet.vm.network "private_network", ip: "192.168.198.10"
+	 config.vm.provider :virtualbox do |vb|
+	 vb.customize ["modifyvm", :id, "--memory", "1024"]
+	 vb.customize ["modifyvm", :id, "--cpus", "2"]
+	end
      end
     
      config.vm.define "router_dns" do |router_dns|
